@@ -1,0 +1,172 @@
+<html class="no-js" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cek Gizi | Puskesmas Cibaregbeg Cianjur</title>
+    <link rel="icon" href="assets/img/favicon.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div id="scrollUp" title="Scroll To Top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <div class="main">
+        <header class="navbar navbar-sticky navbar-expand-lg navbar-dark">
+            <div class="container position-relative">
+                <a class="navbar-brand" href="?">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <img class="navbar-brand-regular" width="100px" src="assets/img/logo/logo-white.png" alt="brand-logo">
+                            <img class="navbar-brand-sticky" width="100px" src="assets/img/logo/logo.png" alt="sticky brand-logo">
+                        </div>
+                        <div class="col-xs-12" style="border-left: 1px solid white; padding-left: 12px;">
+                            <h5 class="mt-4 text-white">Dinas Kesehatan Kabupaten Cianjur<br>Puskesmas Cibaregbeg</h5>
+                        </div>
+                    </div>
+                </a>
+                <button class="navbar-toggler d-lg-none" type="button" data-toggle="navbarToggler" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-inner">
+                    <button class="navbar-toggler d-lg-none" type="button" data-toggle="navbarToggler" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <nav>
+                        <ul class="navbar-nav" id="navbar-nav">
+                            <!-- <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Beranda
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li>
+                                        <a class="dropdown-item" href="index.html">Homepage-1</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index-2.html">Homepage-2</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index-3.html">Homepage-3</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index-4.html">Homepage-4</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index-5.html">Homepage-5</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index-6.html">Homepage-6</a>
+                                    </li>
+                                </ul>
+                            </li> -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="?">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="?page=profile">Profil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="?page=index_gizi">Index Gizi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="portal">Masuk</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <?php include 'page/'.(isset($_GET['page']) ? strtolower($_GET['page']).'.php':'landing.php'); ?>
+        <div class="height-emulator d-none d-lg-block"></div>
+        <footer class="footer-area footer-fixed">
+            <div class="footer-top ptb_100">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="footer-items">
+                                <a class="navbar-brand" href="#">
+                                    <img class="logo" src="assets/img/logo/logo.png" alt="">
+                                </a>
+                                <p class="mt-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis non, fugit totam vel laboriosam vitae.</p>
+                                <div class="social-icons d-flex">
+                                    <a class="facebook" href="#">
+                                        <i class="fab fa-facebook-f"></i>
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a class="twitter" href="#">
+                                        <i class="fab fa-twitter"></i>
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a class="google-plus" href="#">
+                                        <i class="fab fa-google-plus-g"></i>
+                                        <i class="fab fa-google-plus-g"></i>
+                                    </a>
+                                    <a class="vine" href="#">
+                                        <i class="fab fa-vine"></i>
+                                        <i class="fab fa-vine"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="footer-items">
+                                <h3 class="footer-title mb-2">Useful Links</h3>
+                                <ul>
+                                    <li class="py-2"><a href="#">Home</a></li>
+                                    <li class="py-2"><a href="#">About Us</a></li>
+                                    <li class="py-2"><a href="#">Services</a></li>
+                                    <li class="py-2"><a href="#">Blog</a></li>
+                                    <li class="py-2"><a href="#">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="footer-items">
+                                <h3 class="footer-title mb-2">Product Help</h3>
+                                <ul>
+                                    <li class="py-2"><a href="#">FAQ</a></li>
+                                    <li class="py-2"><a href="#">Privacy Policy</a></li>
+                                    <li class="py-2"><a href="#">Support</a></li>
+                                    <li class="py-2"><a href="#">Terms &amp; Conditions</a></li>
+                                    <li class="py-2"><a href="#">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="footer-items">
+                                <h3 class="footer-title mb-2">Download</h3>
+                                <div class="button-group store-buttons store-black d-flex flex-wrap">
+                                    <a href="#">
+                                        <img src="assets/img/icon/google-play-black.png" alt="">
+                                    </a>
+                                    <a href="#">
+                                        <img src="assets/img/icon/app-store-black.png" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4">
+                                <div class="copyright-left">&copy; Copyrights 2022 sApp All rights reserved.</div>
+                                <div class="copyright-right">Made with <i class="fas fa-heart"></i> By <a href="#">Themeland</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="assets/js/jquery/jquery.min.js"></script>
+    <script src="assets/js/bootstrap/popper.min.js"></script>
+    <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+    <script src="assets/js/plugins/plugins.min.js"></script>
+    <script src="assets/js/active.js"></script>
+</body>
+</html>
