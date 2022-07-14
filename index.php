@@ -1,4 +1,5 @@
 <html class="no-js" lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -7,7 +8,9 @@
     <title>Cek Gizi | Puskesmas Cibaregbeg Cianjur</title>
     <link rel="icon" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
 </head>
+
 <body>
     <div id="scrollUp" title="Scroll To Top">
         <i class="fas fa-arrow-up"></i>
@@ -67,7 +70,7 @@
                                 <a class="nav-link" href="?page=profile">Profil</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="?page=index_gizi">Index Gizi</a>
+                                <a class="nav-link" href="?page=dataBalita">Index Gizi</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="portal">Masuk</a>
@@ -77,7 +80,7 @@
                 </div>
             </div>
         </header>
-        <?php include 'page/'.(isset($_GET['page']) ? strtolower($_GET['page']).'.php':'landing.php'); ?>
+        <?php include 'page/' . (isset($_GET['page']) ? strtolower($_GET['page']) . '.php' : 'landing.php'); ?>
         <div class="height-emulator d-none d-lg-block"></div>
         <footer class="footer-area footer-fixed">
             <div class="footer-top ptb_100">
@@ -168,5 +171,13 @@
     <script src="assets/js/bootstrap/bootstrap.min.js"></script>
     <script src="assets/js/plugins/plugins.min.js"></script>
     <script src="assets/js/active.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#datatablesDataset').DataTable();
+        });
+    </script>
 </body>
+
 </html>

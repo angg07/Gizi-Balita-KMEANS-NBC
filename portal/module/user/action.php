@@ -77,4 +77,3 @@ if($act == 'create'){
     $_SESSION['flash']['icon']='fa fa-ban';
     header('Location: ../../media.php?module='.$module);
 }
-?>

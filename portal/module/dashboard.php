@@ -7,20 +7,20 @@
       <div class="card-body p-3">
         <div class="row">
           <div class="col-8">
-            <?php if ($_SESSION['level']!=='customer'): ?>
-              <a href="?module=laporan&act=detail&timeline=harian&time=<?=date('Y-m-d')?>">
+            <?php if ($_SESSION['level'] !== 'customer') : ?>
+              <a href="?module=laporan&act=detail&timeline=harian&time=<?= date('Y-m-d') ?>">
               <?php endif ?>
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Pemasukan Hari ini</p>
                 <h5 class="font-weight-bolder mb-0">
-                  <?php 
-                  $res = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(harga) as total from transaksi where tanggal = '".date('Y-m-d')."'"));
-                  echo "Rp. ".number_format($res['total']);
+                  <?php
+                  $res = mysqli_fetch_array(mysqli_query($conn, "SELECT sum(harga) as total from transaksi where tanggal = '" . date('Y-m-d') . "'"));
+                  echo "Rp. " . number_format($res['total']);
                   ?>
                   <!-- <span class="text-success text-sm font-weight-bolder">+55%</span> -->
                 </h5>
               </div>
-              <?php if ($_SESSION['level']!=='customer'): ?>
+              <?php if ($_SESSION['level'] !== 'customer') : ?>
               </a>
             <?php endif ?>
           </div>
@@ -38,20 +38,20 @@
       <div class="card-body p-3">
         <div class="row">
           <div class="col-8">
-            <?php if ($_SESSION['level']!=='customer'): ?>
-              <a href="?module=laporan&act=detail&timeline=bulanan&time=<?=date('Y-m')?>">
+            <?php if ($_SESSION['level'] !== 'customer') : ?>
+              <a href="?module=laporan&act=detail&timeline=bulanan&time=<?= date('Y-m') ?>">
               <?php endif ?>
               <div class="numbers">
                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Pemasukan Bulan ini</p>
                 <h5 class="font-weight-bolder mb-0">
-                  <?php 
-                  $res = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(harga) as total from transaksi where tanggal like '".date('Y-m')."%'"));
-                  echo "Rp. ".number_format($res['total']);
+                  <?php
+                  $res = mysqli_fetch_array(mysqli_query($conn, "SELECT sum(harga) as total from transaksi where tanggal like '" . date('Y-m') . "%'"));
+                  echo "Rp. " . number_format($res['total']);
                   ?>
                   <!-- <span class="text-success text-sm font-weight-bolder">+3%</span> -->
                 </h5>
               </div>
-              <?php if ($_SESSION['level']!=='customer'): ?>
+              <?php if ($_SESSION['level'] !== 'customer') : ?>
               </a>
             <?php endif ?>
           </div>
@@ -112,38 +112,16 @@
   <div class="col-md-12 mb-xl-0 ">
     <h4>Menu</h4>
   </div>
-  <?php if ($_SESSION['level']=='admin'): ?>
-    <div class="col-md-3 col-xs-12 mb-xl-2 mb-2" hidden>
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row">
-            <div class="col-8">
-              <a href="?module=hasil_tes">
-                <div class="numbers">
-                  <h5 class="font-weight-bolder mb-0 pt-2">
-                    Hasil Tes
-                  </h5>
-                </div>
-              </a>
-            </div>
-            <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-shop text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <?php if ($_SESSION['level'] == 'admin') : ?>
     <div class="col-md-3 col-xs-12 mb-xl-2 mb-2">
       <div class="card">
         <div class="card-body p-3">
           <div class="row">
             <div class="col-8">
-              <a href="?module=hasil_tes">
+              <a href="?module=uploadDataset">
                 <div class="numbers">
                   <h5 class="font-weight-bolder mb-0 pt-2">
-                    Hasil Tes
+                    Dataset
                   </h5>
                 </div>
               </a>
@@ -162,17 +140,17 @@
         <div class="card-body p-3">
           <div class="row">
             <div class="col-8">
-              <a href="?module=soal">
+              <a href="?module=hasil_tes">
                 <div class="numbers">
                   <h5 class="font-weight-bolder mb-0 pt-2">
-                    Master Soal
+                    Hasil Dataset
                   </h5>
                 </div>
               </a>
             </div>
             <div class="col-4 text-end">
               <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-single-copy-04 text-lg opacity-10" aria-hidden="true"></i>
+                <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -202,7 +180,7 @@
       </div>
     </div>
   <?php endif ?>
-  <?php if ($_SESSION['level']=='user'): ?>
+  <?php if ($_SESSION['level'] == 'user') : ?>
     <div class="col-md-4 col-xs-12 mb-xl-2 mb-2">
       <div class="card">
         <div class="card-body p-3">
@@ -270,7 +248,7 @@
       </div>
     </div>
   <?php endif ?>
-  <?php if ($_SESSION['level']=='owner'): ?>
+  <?php if ($_SESSION['level'] == 'owner') : ?>
     <div class="col-md-12 col-xs-12 mb-xl-2 mb-2">
       <div class="card">
         <div class="card-body p-3">

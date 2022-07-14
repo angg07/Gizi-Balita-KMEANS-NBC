@@ -1,5 +1,4 @@
 <?php
-session_start();
 date_default_timezone_set("Asia/Jakarta");
 $is_local = "yes";
 if (strtolower($is_local) == 'yes') {
