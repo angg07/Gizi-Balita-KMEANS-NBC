@@ -11,12 +11,13 @@
             <input required type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
             <div class="row">
               <div class="col-md-12 col-xs-12 form-group">
-                <label><?php echo ucwords(str_replace("_", " ", "username")) ?></label>
-                <input required type="text" class="form-control" name="username" value="<?php echo $edit['username'] ?>">
+                <label><?php echo ucwords(str_replace("_", " ", "username / NIK")) ?></label>
+                <input required type="text" class="form-control" name="username" value="<?php echo $edit['username'] ?>" readonly>
               </div>
               <div class="col-md-12 col-xs-12 form-group">
-                <label><?php echo ucwords(str_replace("_", " ", "password")) ?> <span class="text-muted">* abaikan jika tidak ada pergantian password</span></label>
+                <label><?php echo ucwords(str_replace("_", " ", "password")) ?></label>
                 <input type="password" class="form-control" name="password" autocomplete="off">
+                <br><span class="text-muted">* abaikan jika tidak ada pergantian password</span>
               </div>
               <div class="col-md-12 col-xs-12 form-group">
                 <label><?php echo ucwords(str_replace("_", " ", "nama")) ?></label>

@@ -1,15 +1,23 @@
     <div class="row">
         <div class="col-sm-12">
-            <?php include('aksi.php') ?>
-            <form action="" method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="exampleFormControlFile1">Masukkan Dataset</label>
-                    <input type="file" class="form-control-file" id="formFile" name="filexls">
+            <?php
+            include('aksi.php')
+            ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <h4 for="exampleFormControlFile1">Masukkan Dataset</h4><br>
+                            <input type="file" class="form-control" id="formFile" name="filexls">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="submit" class="btn btn-primary" value="Upload File">
+                            <input type="submit" name="deleteDataset" class="btn btn-primary" value="Delete Dataset">
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <input type="submit" name="submit" class="btn btn-primary" value="Upload File">
-                </div>
-            </form>
+            </div>
+
             <?php
             include_once '../../config/koneksi.php';
 

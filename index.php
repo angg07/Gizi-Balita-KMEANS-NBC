@@ -91,7 +91,9 @@
                                 <a class="navbar-brand" href="#">
                                     <img class="logo" src="assets/img/logo/logo.png" alt="">
                                 </a>
-                                <p class="mt-2 mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis non, fugit totam vel laboriosam vitae.</p>
+                                <p class="mt-2 mb-3">
+                                    Sistem Informasi Penentuan Status Gizi Balita pada Puskesmas Cibaregbeg
+                                </p>
                                 <div class="social-icons d-flex">
                                     <a class="facebook" href="#">
                                         <i class="fab fa-facebook-f"></i>
@@ -136,19 +138,6 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-3">
-                            <div class="footer-items">
-                                <h3 class="footer-title mb-2">Download</h3>
-                                <div class="button-group store-buttons store-black d-flex flex-wrap">
-                                    <a href="#">
-                                        <img src="assets/img/icon/google-play-black.png" alt="">
-                                    </a>
-                                    <a href="#">
-                                        <img src="assets/img/icon/app-store-black.png" alt="">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -157,7 +146,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4">
-                                <div class="copyright-left">&copy; Copyrights 2022 sApp All rights reserved.</div>
+                                <div class="copyright-left">&copy; Copyrights 2022 @ SKripsi 20212.</div>
                                 <div class="copyright-right">Made with <i class="fas fa-heart"></i> By <a href="#">Themeland</a></div>
                             </div>
                         </div>

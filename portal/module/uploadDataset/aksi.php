@@ -5,6 +5,14 @@ include_once '../../config/koneksi.php';
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+if (isset($_POST['deleteDataset'])) {
+    //Delete user
+    $sql = "DELETE FROM users WHERE level ='user'";
+
+    mysqli_query($conn, $sql);
+    mysqli_query($conn, 'TRUNCATE TABLE dataset');
+}
+
 if (isset($_POST['submit'])) {
     $err = '';
     $ekstensi = '';
@@ -16,14 +24,14 @@ if (isset($_POST['submit'])) {
     $file_data = $_FILES['filexls']['tmp_name'];
 
     if (empty($file_name)) {
-        $err .= '<li>Silahkan Masukkan File</li>';
+        $err .= "<li style='color:white;'>Silahkan Masukkan File</li>";
     } else {
         $ekstensi = pathinfo($file_name)['extension'];
     }
 
     $ekstensi_allowed = array('xls', 'xlsx');
     if (!in_array($ekstensi, $ekstensi_allowed)) {
-        $err .= "<li>Silahkan masukkan FIle xls atau xlsx. File yang kamu masukkan <b>$file_name</b> Bertipe <b>$ekstensi</b></li>";
+        $err .= "<li style='color:white;'>Silahkan masukkan FIle xls atau xlsx. File yang kamu masukkan <b>$file_name</b> Bertipe <b>$ekstensi</b></li>";
     }
 
     if (empty($err)) {
@@ -106,5 +114,5 @@ if (isset($_POST['submit'])) {
             <ul><?= $success ?></ul>
         </div>
 <?php }
-    header('Location: ../kmeans.php');
+    // header('Location: ../kmeans.php');
 }

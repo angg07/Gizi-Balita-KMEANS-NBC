@@ -90,7 +90,7 @@
               </g>
             </svg>
           </div>
-          <span class="nav-link-text ms-1">Hasil Tes</span>
+          <span class="nav-link-text ms-1">Hasil Perhitungan</span>
         </a>
       </li>
 

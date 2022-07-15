@@ -111,9 +111,9 @@ include 'config/function.php';
                 <div class="card-body">
                   <form role="form" action="post_login.php" method="post">
                     <input type="hidden" name="redirect" value="<?php echo rawurldecode(@$_GET['r']) ?>">
-                    <label>Username atau Email</label>
+                    <label>NIK atau Email</label>
                     <div class="mb-3">
-                      <input type="text" required name="username" class="form-control" placeholder="Username atau Email" aria-label="username" aria-describedby="email-addon">
+                      <input type="text" required name="username" class="form-control" placeholder="NIK atau Email" aria-label="username" aria-describedby="email-addon">
                     </div>
                     <label>Password</label>
                     <div class="mb-3">
@@ -128,12 +128,12 @@ include 'config/function.php';
                     </div>
                   </form>
                 </div>
-                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                <!-- <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-4 text-sm mx-auto">
                     Belum punya akun?
                     <a href="registration.php" class="text-info text-gradient font-weight-bold">Daftar</a>
                   </p>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-md-6">
@@ -153,7 +153,7 @@ include 'config/function.php';
           <p class="mb-0 text-secondary">
             Copyright © <script>
               document.write(new Date().getFullYear())
-            </script> Soft by Creative Tim.
+            </script> Skripsi 20212.
           </p>
         </div>
       </div>

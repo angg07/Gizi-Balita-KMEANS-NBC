@@ -78,6 +78,7 @@ foreach ($datasetNormal as $value) {
     ];
 }
 
+// print("<pre>" . print_r($dataset, true) . "</pre>");
 
 //Mencari Min MAX TInggi badan yang sudah di Normalisasi
 $findTBNormalisasi = array_column($dataset, 0);
@@ -328,12 +329,7 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
                                 // var_dump($_SESSION['username']);
                                 $dataSetNormalIndexing = $GLOBALS['dataSetNormalIndexing'];
 
-                                $filterBy = $_SESSION['username']; // or Finance etc.
-
-                                //Search NIK
-                                $arrayNik = array_filter($dataSetNormalIndexing, function ($var) use ($filterBy) {
-                                    return ($var['nik'] == $filterBy);
-                                });
+                                $filterBy = $_SESSION['username'];
 
                                 $nikKey = array_search($filterBy, array_column($dataSetNormalIndexing, 'nik'));
                                 // print("<pre>" . print_r($key, true) . "</pre>");
@@ -711,7 +707,7 @@ $_SESSION['persentasiObesitas'] = $valueNBC[3][0];
                     <tbody>
                         <tr>
                             <td class="tg-9wq8" rowspan="2" style="border-right: 1px solid #B5B5B5;">Jumlah</td>
-                            <td class="tg-c3ow"><b></b>Berat Badan Kurang</td>
+                            <td class="tg-c3ow"><b>Berat Badan Kurang</b></td>
                             <td class="tg-c3ow"><b>Berat&nbsp;&nbsp;Badan Ideal</td>
                             <td class="tg-c3ow"><b>Kegemukan</td>
                             <td class="tg-c3ow" style="border-right: 1px solid #B5B5B5;"><b>Obesitas</td>
