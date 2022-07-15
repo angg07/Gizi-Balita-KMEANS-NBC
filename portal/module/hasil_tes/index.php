@@ -349,7 +349,9 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
                                     $status_gizi = "Obesitas";
                                 } else {
                                     $status_gizi = "Tidak Ada";
-                                } ?>
+                                }
+                                $IMT = BMIWithLabel($datasetNormal[$nikKey][1], $datasetNormal[$nikKey][0]);
+                                ?>
                                 <tr>
                                     <td align='center'><?= $no ?></td>
                                     <td><?= $datasetNormal[$nikKey][2] ?></td>
@@ -357,7 +359,7 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
                                     <td align='center'><?= $datasetNormal[$nikKey][1] ?></td>
                                     <td align='center'><?= round($dataset[$nikKey][0], 6) ?></td>
                                     <td align='center'><?= round($dataset[$nikKey][1], 6) ?></td>
-                                    <td align='center'><?= BMIWithLabel($datasetNormal[$nikKey][1], $datasetNormal[$nikKey][0]) ?></td>
+                                    <td align='center'><?= $IMT ?></td>
                                     <td align='center'><?= $status_gizi ?></td>
                                 </tr>
                             <?php
@@ -376,7 +378,7 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
 function printCentroidLabel($jarakCentroid)
 { ?>
     <br><br>
-    <h3>Jarak Centroid Cluster</h3>
+    <h5>Jarak Centroid Cluster</h5>
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body px-0 pt-0 pb-2">
@@ -416,7 +418,6 @@ function printCentroidLabel($jarakCentroid)
 function hasil_cluster($dataset_label, $banyak_dataset, $datasetNormal)
 {
     $no = 0;
-
     for ($i = 0; $i < $banyak_dataset; $i++) {
         $no++;
 
@@ -451,9 +452,9 @@ function hasil_cluster($dataset_label, $banyak_dataset, $datasetNormal)
             $status_gizi
         ];
     }
-
     return $arrStatusGizi;
 }
+
 
 function getModel()
 {
@@ -466,7 +467,7 @@ function getModel()
     $hasil_clustering_Kmeans = hasil_cluster($GLOBALS['dataset_label'], $GLOBALS['banyak_dataset'], $GLOBALS['datasetNormal']);
     foreach ($hasil_clustering_Kmeans as $data) {
         $trainingSet[] = [
-            'BMI' => $data[0],
+            // 'BMI' => $data[0],
             'result' => $data[1]
         ];
     }
@@ -475,8 +476,8 @@ function getModel()
 
 
     $params = array(
-        // 'BMI' => 'OBESE',
-        'result' => "Berat Badan Kurang"
+        // 'BMI' => 'UNDERWEIGHT',
+        'result' => "Berat badan Ideal"
     );
 
     return array(
@@ -524,14 +525,36 @@ while ($ulang) {
 
 <?php
 $dataArrayFilter = array();
+$IMTArray = array();
 $hasilHasil = hasil_cluster($dataset_label, $banyak_dataset, $datasetNormal);
 
 foreach ($hasilHasil as $DAF) {
     $dataArrayFilter[] = [
+        'IMT' => $DAF[0],
         'stats' => $DAF[1]
     ];
 }
 
+//FIlter IMT
+$filterUnder = 'UNDERWEIGHT';
+$filterNormal = 'NORMAL WEIGHT';
+$filterOver = 'OVERWEIGHT';
+$filterObese = 'OBESE';
+
+$dataUnder = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterUnder];
+$dataNormal = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterNormal];
+$dataOver = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterOver];
+$dataObese = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterObese];
+$totalDataIMT = $dataUnder + $dataNormal + $dataOver + $dataObese;
+
+$jumlahDataIMTFilter[] = [
+    'under' => $dataUnder,
+    'normal' => $dataNormal,
+    'over' => $dataOver,
+    'obese' => $dataObese
+];
+
+//Filter Status Gizi
 $filterKurang = 'Berat Badan Kurang';
 $filterIdeal = 'Berat Badan Ideal';
 $filterKegemukan = 'Kegemukan';
@@ -541,20 +564,28 @@ $dataKurang = array_count_values(array_column($dataArrayFilter, 'stats'))[$filte
 $dataIdeal = array_count_values(array_column($dataArrayFilter, 'stats'))[$filterIdeal];
 $dataKegemukan = array_count_values(array_column($dataArrayFilter, 'stats'))[$filterKegemukan];
 $dataObesitas = array_count_values(array_column($dataArrayFilter, 'stats'))[$filterObesitas];
-$totalData = $dataKurang + $dataIdeal + $dataKegemukan + $dataObesitas;
+$totalDataStatus = $dataKurang + $dataIdeal + $dataKegemukan + $dataObesitas;
 
-$jumlahDataFilter[] = [
+$jumlahDataStatusFilter[] = [
     'kurang' => $dataKurang,
     'ideal' => $dataIdeal,
     'kegemukan' => $dataKegemukan,
     'obesitas' => $dataObesitas
 ];
 
-// print("<pre>" . print_r($jumlahDataFilter, true) . "</pre>");
+
+$alkurasiKurang = ($dataUnder + $banyak_dataset) / (($dataUnder + $banyak_dataset) + $dataKurang);
+$akurasiIdeal = ($dataNormal + $banyak_dataset) / (($dataNormal + $banyak_dataset) + $dataIdeal);
+$akurasiKegemukan = ($dataOver + $banyak_dataset) / (($dataOver + $banyak_dataset) + $dataKegemukan);
+$akurasiObesitas = ($dataObese + $banyak_dataset) / (($dataObese + $banyak_dataset) + $dataObesitas);
+$totalAkurasi = ($alkurasiKurang + $akurasiIdeal + $akurasiKegemukan + $akurasiObesitas) / 4;
+
+// print("<pre>" . print_r($jumlahDataIMTFilter, true) . "</pre>");
+// print("<pre>" . print_r($jumlahDataStatusFilter, true) . "</pre>");
 
 
 print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal); // Menampilakn Hasil Cluster
-printCentroidLabel($jarakCentroid); // Menampilakn Label Cluster
+
 
 
 //-------------------------------------------------------------------   
@@ -567,8 +598,54 @@ $naiveBayes = new NaiveBayes($model['classes'], $model['classField'], $model['tr
 
 $classesResult = $naiveBayes->getResultProbabilityOfClassOnCondition(10);
 $resultClass = $naiveBayes->getClassificationResult();
+
+$_SESSION['persentasiKurang'] = $valueNBC[0][0];
+$_SESSION['persentasiIdeal'] = $valueNBC[1][0];
+$_SESSION['persentasiGemuk'] = $valueNBC[2][0];
+$_SESSION['persentasiObesitas'] = $valueNBC[3][0];
+
 ?>
 
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <?php
+            printCentroidLabel($jarakCentroid); // Menampilakn Label Cluster
+            ?>
+        </div>
+        <div class="col-sm-6">
+            <br><br>
+            <h5>Rumus IMT</h5>
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table class="table display">
+                                <thead>
+                                    <tr>
+                                        <td>Indeks massa tubuh (IMT) = berat badan (kg) : tinggi badan (m)²</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <ul>
+                                                <li>Kurang IMT < 18,5</li>
+                                                <li>Ideal 18,5 < IMT < 24,9</li>
+                                                <li>Gemuk 25 < IMT < 29,9</li>
+                                                <li>Obesitas 30 < IMT</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <br><br>
 <h3>Hasil Klasifikasi</h3>
@@ -648,10 +725,10 @@ $resultClass = $naiveBayes->getClassificationResult();
                             <td class="tg-c3ow"><?= $dataIdeal; ?></td>
                             <td class="tg-c3ow"><?= $dataKegemukan; ?></td>
                             <td class="tg-c3ow"><?= $dataObesitas; ?></td>
-                            <td class="tg-c3ow" style="border-left: 1px solid #B5B5B5;"><?= $dataKurang . " / " . $totalData ?></td>
-                            <td class="tg-c3ow"><?= $dataIdeal . " / " . $totalData ?></td>
-                            <td class="tg-c3ow"><?= $dataKegemukan . " / " . $totalData ?></td>
-                            <td class="tg-c3ow"><?= $dataObesitas . " / " . $totalData ?></td>
+                            <td class="tg-c3ow" style="border-left: 1px solid #B5B5B5;"><?= $dataKurang . " / " . $totalDataStatus ?></td>
+                            <td class="tg-c3ow"><?= $dataIdeal . " / " . $totalDataStatus ?></td>
+                            <td class="tg-c3ow"><?= $dataKegemukan . " / " . $totalDataStatus ?></td>
+                            <td class="tg-c3ow"><?= $dataObesitas . " / " . $totalDataStatus ?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -674,6 +751,7 @@ $resultClass = $naiveBayes->getClassificationResult();
                     </thead>
                     <?php
                     $no = 0;
+                    $valueNBC = array();
                     foreach ($classesResult as $class => $value) {
                         $no++;
                     ?>
@@ -684,10 +762,19 @@ $resultClass = $naiveBayes->getClassificationResult();
                                 <td><?= round($value * 100, 2) ?>%</td>
                             </tr>
                         </tbody>
-                    <?php } ?>
+                    <?php
+                        $valueNBC[] = [
+                            round($value * 100, 2)
+                        ];
+                    }
+                    // print_r($valueNBC[1]);
+                    ?>
                     <tfoot>
                         <tr>
-                            <td colspan="2">Mayoritas balita di Puskesmas Cibaregbeg, Memiliki status <b><?= $resultClass ?></b></td>
+                            <td colspan="3">Mayoritas balita di Puskesmas Cibaregbeg, Memiliki status <b><?= $resultClass ?></b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Akurasi Probabilitas : <b><?= round($totalAkurasi * 100, 2); ?>%</b></td>
                         </tr>
                     </tfoot>
                 </table>
