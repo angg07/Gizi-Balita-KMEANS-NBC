@@ -29,6 +29,8 @@ include_once '../../config/NaiveBayes.php';
 $query = mysqli_query($conn, "SELECT * FROM dataset");
 $datasetNormal = array();
 $dataSetNormalIndexing = array();
+$SAMPLES = array();
+$LABELS = array();
 
 //Mengambil dataset di database
 if (mysqli_num_rows($query) > 0) {
@@ -46,6 +48,13 @@ if (mysqli_num_rows($query) > 0) {
             'nama' => $data['nama'],
             'nik' => $data['nik'],
         ];
+
+        $SAMPLES[] = [
+            $data['tb'],
+            $data['bb']
+        ];
+
+        $LABELS[] = BMIWithLabel($data['bb'], $data['tb']);
     }
 }
 
@@ -132,6 +141,14 @@ foreach ($jarakCentroid as $c) {
 
 // print("<pre>" . print_r($centroid, true) . "</pre>");
 
+//Test Data For NBC
+$TEST = array();
+for ($i = 0; $i < 139; $i++) {
+    $TEST[] = [
+        $SAMPLES[$i][0],
+        $SAMPLES[$i][1],
+    ];
+}
 
 // Banyak Dataset
 $banyak_dataset = sizeof($dataset);
@@ -164,6 +181,7 @@ function hitung_euclidean_distance($dataset, $centroid, $banyak_kolom)
         $siat = $siat + (($dataset[$i] - $centroid[$i]) ** 2);
     }
 
+    print("<pre>" . print_r($siat, true) . "</pre>");
     return sqrt($siat);
 }
 
@@ -222,6 +240,7 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
         }
         $new_centroid[$i] = $hasil_centroid;
     }
+    // print("<pre>" . print_r($new_centroid, true) . "</pre>");
 
     return [$new_centroid, $dataset_label];
 }
@@ -262,16 +281,6 @@ function BMIWithLabel($mass, $height)
     return $messageBMI;
 }
 
-function searchForNik($id, $array)
-{
-    foreach ($array as $key => $val) {
-        if ($val['nik'] === $id) {
-            return $key;
-        }
-    }
-    return null;
-}
-
 // Print tabel hasil cluster
 function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal)
 { ?>
@@ -280,7 +289,7 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
         <div class="card">
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table display" id="datatables">
+                    <table class="table display" id="datatables2">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -531,6 +540,7 @@ foreach ($hasilHasil as $DAF) {
     ];
 }
 
+// print_r($dataArrayFilter);
 //FIlter IMT
 $filterUnder = 'UNDERWEIGHT';
 $filterNormal = 'NORMAL WEIGHT';
@@ -595,11 +605,52 @@ $naiveBayes = new NaiveBayes($model['classes'], $model['classField'], $model['tr
 $classesResult = $naiveBayes->getResultProbabilityOfClassOnCondition(10);
 $resultClass = $naiveBayes->getClassificationResult();
 
-$_SESSION['persentasiKurang'] = $valueNBC[0][0];
-$_SESSION['persentasiIdeal'] = $valueNBC[1][0];
-$_SESSION['persentasiGemuk'] = $valueNBC[2][0];
-$_SESSION['persentasiObesitas'] = $valueNBC[3][0];
+function CekIMTStatus($cekIMT, $cekStatus)
+{
+    $hasilCek = '';
 
+    //CekIMT
+    if ($cekIMT == 'UNDERWEIGHT') {
+        $cekIMT = 'Kurang';
+    }
+
+    if ($cekIMT == 'NORMAL WEIGHT') {
+        $cekIMT = 'Normal';
+    }
+
+    if ($cekIMT == 'OVERWEIGHT') {
+        $cekIMT = 'Over';
+    }
+
+    if ($cekIMT == 'OBESE') {
+        $cekIMT = 'OBESE';
+    }
+
+    //STatus
+    if ($cekStatus == 'Berat Badan Kurang') {
+        $cekStatus = 'Kurang';
+    }
+
+    if ($cekStatus == 'Berat Badan Ideal') {
+        $cekStatus = 'Normal';
+    }
+
+    if ($cekStatus == 'Kegemukan') {
+        $cekStatus = 'Over';
+    }
+
+    if ($cekStatus == 'Obesitas') {
+        $cekStatus = 'OBESE';
+    }
+
+    if ($cekIMT == $cekStatus) {
+        $hasilCek = 'Sesuai';
+    } else {
+        $hasilCek = 'Tidak Sesuai';
+    }
+
+    return $hasilCek;
+}
 ?>
 
 <div class="container">
@@ -732,12 +783,14 @@ $_SESSION['persentasiObesitas'] = $valueNBC[3][0];
         </div>
     </div>
 </div>
+
+
 <br><br>
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
-                <table class="table display" id="datatables">
+                <table class="table display">
                     <thead>
                         <tr>
                             <td><b>No</b></td>
@@ -773,6 +826,51 @@ $_SESSION['persentasiObesitas'] = $valueNBC[3][0];
                             <td colspan="3">Akurasi Probabilitas : <b><?= round($totalAkurasi * 100, 2); ?>%</b></td>
                         </tr>
                     </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-0">
+                <table class="table display" id="datatables2">
+                    <thead>
+                        <tr>
+                            <td>No</td>
+                            <td>Nama</td>
+                            <td>Hasil NBC</td>
+                            <td>Hasil K-Means</td>
+                            <td>Hasil Perbandingan</td>
+                        </tr>
+                    </thead>
+                    <?php
+                    $no = 0;
+                    for ($i = 0; $i < $banyak_dataset; $i++) {
+                        $no++;
+                        $NB = new NaiveBayesClassification();
+                        $NB->train($SAMPLES, $LABELS);
+                        $PREDICTED[] = $NB->predict($TEST[$i]);
+
+                        $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
+                        // echo "<br>";
+                        // echo $PREDICTED;
+                    ?>
+                        <tbody>
+                            <tr>
+                                <td><?= $no ?></td>
+                                <td><?= $datasetNormal[$i][2] ?></td>
+                                <td><?= $PREDICTED[$i] ?></td>
+                                <td><?= $dataArrayFilter[$i]['stats'] ?></td>
+                                <td><?= $hasilCek ?></td>
+                            </tr>
+                        </tbody>
+                    <?php
+                    }
+                    ?>
                 </table>
             </div>
         </div>

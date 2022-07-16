@@ -539,6 +539,8 @@
         </div>
     </div>
     <script>
+        window.print();
+
         function back() {
             history.back();
         }

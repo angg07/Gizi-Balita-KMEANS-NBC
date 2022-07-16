@@ -16,6 +16,7 @@ foreach ($js as $key => $value) { ?>
     //   Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     // }
     $('#datatables').DataTable();
+    $('#datatables2').DataTable();
     $('#datatablesDataset').DataTable();
     $('[data-toggle="tooltip"]').tooltip()
 

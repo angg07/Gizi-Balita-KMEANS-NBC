@@ -1,7 +1,7 @@
     <div class="row">
         <div class="col-sm-12">
             <?php
-            include('./aksi.php')
+            include_once 'aksi.php'
             ?>
             <div class="row">
                 <div class="col-sm-6">
@@ -11,8 +11,9 @@
                             <input type="file" class="form-control" id="formFile" name="filexls">
                         </div>
                         <div class="form-group">
-                            <input type="submit" name="submit" class="btn btn-primary" value="Upload File">
-                            <input type="submit" name="deleteDataset" class="btn btn-primary" value="Delete Dataset">
+                            <input type="submit" name="submit" class="btn btn-success" value="Upload File">
+                            <input type="submit" name="deleteDataset" class="btn btn-danger
+                            " value="Delete Dataset">
                         </div>
                     </form>
                 </div>
