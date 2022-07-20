@@ -5,6 +5,24 @@ include_once '../../config/koneksi.php';
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+function BMIWithLabel($mass, $height)
+{
+    $heightToMeters = $height / 100;
+    $BMI = $mass / ($heightToMeters ** 2);
+
+    if ($BMI <= 18.5) {
+        $messageBMI = "Underweight";
+    } else if ($BMI > 17 && $BMI <= 23) {
+        $messageBMI = "Normal Weight";
+    } else if ($BMI > 23 && $BMI <= 27) {
+        $messageBMI = "Overweight";
+    } else if ($BMI > 27) {
+        $messageBMI = "Obese";
+    }
+
+    return $messageBMI;
+}
+
 if (isset($_POST['deleteDataset'])) {
     //Delete user
     $sql = "DELETE FROM users WHERE level ='user'";
@@ -41,21 +59,27 @@ if (isset($_POST['submit'])) {
 
         $jumlahData = 0;
         // echo $spreadsheet;
+
         for ($i = 1; $i < count($sheetData); $i++) {
+            $jenisData = $_POST['jenisData'];
             $nik = $sheetData[$i][1];
             $nama = $sheetData[$i][2];
-            $tb = $sheetData[$i][3];
-            $bb = $sheetData[$i][4];
+            $tempatLahir = $sheetData[$i][3];
+            $tanggalLahir = $sheetData[$i][4];
+            $kelamin = $sheetData[$i][5];
+            $golDar = $sheetData[$i][6];
+            $tb = $sheetData[$i][13];
+            $bb = $sheetData[$i][14];
             $email = $nik . '@email.com';
             $cariNik = mysqli_num_rows(mysqli_query($conn, "SELECT nik FROM dataset WHERE nik='$nik'"));
             $cariUser = mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username='$nik'"));
 
             // echo $cariNik;
             if ($cariNik > 0) {
-                $sql = "UPDATE dataset SET nama='$nama', tb='$tb', bb='$bb' WHERE nik='$nik'";
+                $sql = "UPDATE dataset SET nama='$nama', tb='$tb', bb='$bb', tempatLahir='$tempatLahir', jenisData='$jenisData', jenisKelamin='$kelamin', tanggalLahir='$tanggalLahir' WHERE nik='$nik'";
             } else {
                 // echo $nik . " - " . $nama . " - " . $tb . " - " . $bb . "<br>";
-                $sql = "INSERT INTO dataset (nik, nama, tb, bb) VALUES ('$nik', '$nama', '$tb', '$bb')";
+                $sql = "INSERT INTO dataset (nik, nama, tb, bb, jenisKelamin, golDar, tempatLahir, tanggalLahir, jenisData) VALUES ('$nik', '$nama', '$tb', '$bb', '$kelamin', '$golDar', '$tempatLahir', '$tanggalLahir', '$jenisData')";
             }
 
             //Otomatis membuat login dengan username dan password dari nik

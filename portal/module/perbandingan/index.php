@@ -56,7 +56,10 @@ if (mysqli_num_rows($query) > 0) {
             $data['bb']
         ];
 
-        $LABELS[] = BMIWithLabel($data['bb'], $data['tb']);
+        $LABELS[] = BMIWithLabel2($data['bb'], $data['tb']);
+        $LABELSWithIndex[] =  [
+            'IMT' => BMIWithLabel2($data['bb'], $data['tb'])
+        ];
     }
 }
 
@@ -146,23 +149,15 @@ foreach ($jarakCentroid as $c) {
 
 // Banyak Dataset
 $banyak_dataset = sizeof($dataset);
-// echo "<br/>";
-// echo ("Banyak Dataset : ");
-// echo ($banyak_dataset);
+
 
 // Banyak Centroid
 $banyak_centroid = sizeof($centroid);
-// echo "<br/>";
-// echo ("Banyak Centroid : ");
-// echo ($banyak_centroid);
+
 
 // Banyak Kolom
 $banyak_kolom = sizeof($dataset[0]);
-// echo "<br/>";
-// echo ("Banyak Kolom : ");
-// echo ($banyak_kolom);
-// echo "<br/>";
-// echo "<br/>";
+
 
 
 // Fungsi euclidean distance
@@ -239,6 +234,7 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
     return [$new_centroid, $dataset_label];
 }
 
+
 //-------------------------------------------------------------------   
 //------------------------ Awal Properti BMI ------------------------
 //-------------------------------------------------------------------
@@ -268,43 +264,27 @@ function BMIWithLabel($mass, $height)
     return $messageBMI;
 }
 
+function BMIWithLabel2($mass, $height)
+{
+    $heightToMeters = $height / 100;
+    $BMI = $mass / ($heightToMeters ** 2);
+
+    if ($BMI <= 18.5) {
+        $messageBMI = "Berat Badan Kurang";
+    } else if ($BMI > 17 && $BMI <= 23) {
+        $messageBMI = "Berat Badan Ideal";
+    } else if ($BMI > 23 && $BMI <= 27) {
+        $messageBMI = "Kegemukan";
+    } else if ($BMI > 27) {
+        $messageBMI = "Obesitas";
+    }
+
+    return $messageBMI;
+}
+
 function CekIMTStatus($cekIMT, $cekStatus)
 {
     $hasilCek = '';
-
-    //CekIMT
-    if ($cekIMT == 'Underweight') {
-        $cekIMT = 'Kurang';
-    }
-
-    if ($cekIMT == 'Normal Weight') {
-        $cekIMT = 'Normal';
-    }
-
-    if ($cekIMT == 'Overweight') {
-        $cekIMT = 'Over';
-    }
-
-    if ($cekIMT == 'Obese') {
-        $cekIMT = 'OBESE';
-    }
-
-    //STatus
-    if ($cekStatus == 'Berat Badan Kurang') {
-        $cekStatus = 'Kurang';
-    }
-
-    if ($cekStatus == 'Berat Badan Ideal') {
-        $cekStatus = 'Normal';
-    }
-
-    if ($cekStatus == 'Kegemukan') {
-        $cekStatus = 'Over';
-    }
-
-    if ($cekStatus == 'Obesitas') {
-        $cekStatus = 'OBESE';
-    }
 
     if ($cekIMT == $cekStatus) {
         $hasilCek = 'Sesuai';
@@ -449,7 +429,6 @@ function printCentroidLabel($jarakCentroid)
                                     <td><b><?= $labelCentroid['nama'] ?></b></td>
                                     <td><?= round($labelCentroid['tb'], 6) ?></td>
                                     <td><?= round($labelCentroid['bb'], 6) ?></td>
-
                                 </tr>
                             </tbody>
                         <?php } ?>
@@ -472,16 +451,7 @@ function hasil_cluster($dataset_label, $banyak_dataset, $datasetNormal)
         $weight = $datasetNormal[$i][1];
         $height = $datasetNormal[$i][0];
 
-        $BMI = BMI($weight, $height);
-        if ($BMI <= 18.5) {
-            $messageBMI = "UNDERWEIGHT";
-        } else if ($BMI > 17 && $BMI <= 23) {
-            $messageBMI = "NORMAL WEIGHT";
-        } else if ($BMI > 23 && $BMI <= 27) {
-            $messageBMI = "OVERWEIGHT";
-        } else if ($BMI > 27) {
-            $messageBMI = "OBESE";
-        }
+        $BMI = BMIWithLabel($weight, $height);
 
 
         if ($dataset_label[$i] == 0) {
@@ -496,7 +466,7 @@ function hasil_cluster($dataset_label, $banyak_dataset, $datasetNormal)
             $status_gizi = "Tidak Ada";
         }
         $arrStatusGizi[] = [
-            $messageBMI,
+            $BMI,
             $status_gizi
         ];
     }
@@ -626,6 +596,27 @@ $jumlahDataStatusFilter[] = [
     'obesitas' => $dataObesitas
 ];
 
+//Filter Label
+$filterUnderNBC = 'Berat Badan Kurang';
+$filterNormalNBC = 'Berat Badan Ideal';
+$filterOverNBC = 'Kegemukan';
+$filterObeseNBC = 'Obesitas';
+
+$dataUnderNBC = array_count_values(array_column($LABELSWithIndex, 'IMT'))[$filterUnderNBC];
+$dataNormalNBC = array_count_values(array_column($LABELSWithIndex, 'IMT'))[$filterNormalNBC];
+$dataOverNBC = array_count_values(array_column($LABELSWithIndex, 'IMT'))[$filterOverNBC];
+$dataObeseNBC = array_count_values(array_column($LABELSWithIndex, 'IMT'))[$filterObeseNBC];
+$totalDataNBC = $dataUnderNBC + $dataNormalNBC + $dataOverNBC + $dataObeseNBC;
+
+$jumlahDataNBCFilter[] = [
+    'under' => $dataUnderNBC,
+    'normal' => $dataNormal,
+    'over' => $dataOverNBC,
+    'obese' => $dataObeseNBC
+];
+
+
+
 
 $alkurasiKurang = ($dataUnder + $banyak_dataset) / (($dataUnder + $banyak_dataset) + $dataKurang);
 $akurasiIdeal = ($dataNormal + $banyak_dataset) / (($dataNormal + $banyak_dataset) + $dataIdeal);
@@ -659,198 +650,12 @@ $naiveBayes = new NaiveBayes($model['classes'], $model['classField'], $model['tr
 
 $classesResult = $naiveBayes->getResultProbabilityOfClassOnCondition(10);
 $resultClass = $naiveBayes->getClassificationResult();
+
+// print("<pre>" . print_r($dataUnderNBC, true) . "</pre>")
 ?>
-
-<!----- Jarak Centroid dan RUMUS IMT ----->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6">
-            <?php
-            // Menampilakn Label Cluster
-            printCentroidLabel($jarakCentroid);
-            ?>
-        </div>
-        <div class="col-sm-6">
-            <br><br>
-            <h5>Rumus IMT</h5>
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body px-0 pt-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table display">
-                                <thead>
-                                    <tr>
-                                        <td>Indeks massa tubuh (IMT) = berat badan (kg) : tinggi badan (m)²</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <ul>
-                                                <li>Kurang IMT < 18,5</li>
-                                                <li>Ideal 18,5 < IMT < 24,9</li>
-                                                <li>Gemuk 25 < IMT < 29,9</li>
-                                                <li>Obesitas 30 < IMT</li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php
-print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid); // Menampilakn Hasil Cluster
-?>
-
-
-<!----- Hasil Klasifikasi----->
-<!-- <br><br>
-<h3>Hasil Naive Bayes Classification</h3>
-<div class="col-sm-12">
-    <div class="card">
-        <div class="card-body px-0 pt-0 pb-2">
-            <div class="table-responsive p-0">
-                <style type="text/css">
-                    .tg {
-                        border-collapse: collapse;
-                        border-spacing: 0;
-                    }
-
-                    .tg td {
-                        border-color: black;
-                        border-style: solid;
-                        border-width: 1px;
-                        font-family: Arial, sans-serif;
-                        font-size: 14px;
-                        overflow: hidden;
-                        padding: 10px 5px;
-                        word-break: normal;
-                    }
-
-                    .tg th {
-                        border-color: black;
-                        border-style: solid;
-                        border-width: 1px;
-                        font-family: Arial, sans-serif;
-                        font-size: 14px;
-                        font-weight: normal;
-                        overflow: hidden;
-                        padding: 10px 5px;
-                        word-break: normal;
-                    }
-
-                    .tg .tg-9wq8 {
-                        border-color: inherit;
-                        text-align: center;
-                        vertical-align: middle
-                    }
-
-                    .tg .tg-c3ow {
-                        border-color: inherit;
-                        text-align: center;
-                        vertical-align: top
-                    }
-
-                    .tg .tg-0pky {
-                        border-color: inherit;
-                        text-align: left;
-                        vertical-align: top
-                    }
-                </style>
-                <table class="tg table display table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="tg-c3ow">#</th>
-                            <th class="tg-c3ow" colspan="4" style="border-right: 1px solid #B5B5B5;"><b>Jumlah Kategori Status Gizi</b></th>
-                            <th class="tg-c3ow" colspan="4"><b>Probabilitas Kategori Status Gizi</b></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tg-9wq8" rowspan="2" style="border-right: 1px solid #B5B5B5;">Jumlah</td>
-                            <td class="tg-c3ow"><b>Berat Badan Kurang</b></td>
-                            <td class="tg-c3ow"><b>Berat&nbsp;&nbsp;Badan Ideal</td>
-                            <td class="tg-c3ow"><b>Kegemukan</td>
-                            <td class="tg-c3ow" style="border-right: 1px solid #B5B5B5;"><b>Obesitas</td>
-                            <td class="tg-c3ow"><b>Berat Badan Kurang</td>
-                            <td class="tg-c3ow"><b>Berat Badan Ideal</td>
-                            <td class="tg-c3ow"><b>Kegemukan</td>
-                            <td class="tg-c3ow"><b>Obesitas</td>
-                        </tr>
-                        <tr>
-                            <td class="tg-c3ow"><?= $dataKurang; ?></td>
-                            <td class="tg-c3ow"><?= $dataIdeal; ?></td>
-                            <td class="tg-c3ow"><?= $dataKegemukan; ?></td>
-                            <td class="tg-c3ow"><?= $dataObesitas; ?></td>
-                            <td class="tg-c3ow" style="border-left: 1px solid #B5B5B5;"><?= $dataKurang . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataIdeal . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataKegemukan . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataObesitas . " / " . $totalDataStatus ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-<!----- Persentase Clustering ----->
-<br><br>
-<div class="col-sm-12">
-    <div class="card">
-        <div class="card-body px-0 pt-0 pb-2">
-            <div class="table-responsive p-0">
-                <table class="table display">
-                    <thead>
-                        <tr>
-                            <td><b>No</b></td>
-                            <td><b>Label Cluster</b></td>
-                            <td><b>Value</b></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $no = 0;
-                        $valueNBC = array();
-                        foreach ($classesResult as $class => $value) {
-                            $no++;
-                        ?>
-                            <tr>
-                                <td><?= $no ?></td>
-                                <td><?= $class ?></td>
-                                <td><?= round($value * 100, 2) ?>%</td>
-                            </tr>
-                        <?php
-                            $valueNBC[] = [
-                                round($value * 100, 2)
-                            ];
-                        }
-                        // print_r($valueNBC[1]);
-                        ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3">Mayoritas balita di Puskesmas Cibaregbeg, Memiliki status <b><?= $resultClass ?></b></td>
-                        </tr>
-                        <!-- <tr>
-                            <td colspan="3">Akurasi Probabilitas : <b><?= round($totalAkurasi * 100, 2); ?>%</b></td>
-                        </tr> -->
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!----- Hasil Tabel Naive Bayes Classification ----->
-<!-- <br><br>
+<br><br>
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
@@ -868,12 +673,16 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                     <tbody>
                         <?php
                         $no = 0;
+                        $valueKmeans = array();
+                        foreach ($classesResult as $class => $value) {
+                            $valueKmeans[] =
+                                round($value * 100, 0);
+                        }
                         for ($i = 0; $i < $banyak_dataset; $i++) {
                             $no++;
                             $NB = new NaiveBayesClassification();
                             $NB->train($SAMPLES, $LABELS);
                             $PREDICTED[] = $NB->predict($TEST[$i]);
-                            $PROBABILITAS[] = $NB->predictProbabilitas($TEST[$i]);
 
                             $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
                             // echo "<br>";
@@ -890,8 +699,20 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                         }
                         ?>
                     </tbody>
+                    <tfoot class="bg-primary text-white">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="left"><b>Akurasi K-Means</b></td>
+                            <td colspan="3" align="left"><?= round(($valueKmeans[0] / $dataUnder) * 100, 2) ?> %</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="left"><b>Akurasi NaiveBayes</b></td>
+                            <td colspan="3" align="left"><?= round((($dataUnderNBC - $valueKmeans[0])  / $dataUnder) * 100, 2) ?> %</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
-</div> -->
+</div>

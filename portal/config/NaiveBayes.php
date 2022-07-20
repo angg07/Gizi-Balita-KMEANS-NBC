@@ -430,16 +430,16 @@ class NaiveBayesClassification
             //Kalikan Semua Variable Kelas
             foreach ($SAMPLESAMPLES_PROB as $SAMPLES_PROB) {
                 // echo $SAMPLES_PROB . "&emsp;";
-                // print_r($this->$SAMPLES_PROB);
+                // print("<pre>" . print_r($this->$SAMPLES_PROB, true) . "</pre>");
 
                 foreach ($this->$SAMPLES_PROB as $KEY => $VALUE) {
                     $this->$SAMPLES_PROB[$KEY] /= $this->LABELS_SUM[$KEY];
                 }
 
-                // print_r($this->$SAMPLES_PROB);
-                // echo "<br>";
+                // print("<pre>" . print_r($this->$SAMPLES_PROB, true) . "</pre>");
             }
         }
+
         // If SAMPLES are single array
         else {
             $this->LEN_SAMPLES_SUB = count($this->SAMPLES);
@@ -453,15 +453,14 @@ class NaiveBayesClassification
             }
 
             foreach ($SAMPLESAMPLES_PROB as $SAMPLES_PROB) {
-                echo $SAMPLES_PROB . "&emsp;";
-                print_r($this->$SAMPLES_PROB);
+                // echo $SAMPLES_PROB . "&emsp;";
+                // print_r($this->$SAMPLES_PROB);
 
                 foreach ($this->$SAMPLES_PROB as $KEY => $VALUE) {
                     $this->$SAMPLES_PROB[$KEY] /= $this->LABELS_SUM[$KEY];
                 }
 
-                // print_r($this->$SAMPLES_PROB);
-                // echo "<br>";
+                // print("<pre>" . print_r($this->$SAMPLES_PROB, true) . "</pre>");
             }
         }
     }
@@ -505,6 +504,52 @@ class NaiveBayesClassification
         }
         $HIGHEST_PROB = array_search(max($PROB_LIST), $PROB_LIST);
         // print("<pre>" . print_r($HIGHEST_PROB, true) . "</pre>");
+        // print("<pre>" . print_r($PROB_LIST, true) . "</pre>");
+        // print("<pre>" . print_r($HIGHEST_PROB, true) . "</pre>");
         return $HIGHEST_PROB;
+    }
+
+    public function predictProbabilitas($INPUT)
+    {
+        // INPUT should not be multidimension
+        if (count($INPUT) != count($INPUT, COUNT_RECURSIVE)) {
+            echo "Error : INPUT should not be multidimensional <br>";
+            return null;
+        }
+
+        // SAMPLES and INPUT must have the same size
+        if (count($this->SAMPLES) != count($this->SAMPLES, COUNT_RECURSIVE)) {
+            if ($this->LEN_SAMPLES_SUB != count($INPUT)) {
+                echo "Error : Uneven SAMPLES and INPUT size <br>";
+                return null;
+            }
+        } else {
+            if (count($INPUT) != 1) {
+                echo "Error : Invalid INPUT size <br>";
+                return null;
+            }
+        }
+
+        $this->INPUT = $INPUT;
+        $LEN_INPUT = count($this->INPUT);
+        $PROB_LIST = array();
+
+        //Membandingkan Hasil Per Kelas
+        foreach ($this->LABELS_SUM as $KEY => $VALUE) {
+            $PROB = 1;
+            for ($I = 0; $I < $LEN_INPUT; $I++) {
+                (count($this->SAMPLES) != count($this->SAMPLES, COUNT_RECURSIVE)) ?    $SAMPLES_PROB = $I . "_" . $this->INPUT[$I] : $SAMPLES_PROB = $this->INPUT[$I];
+                if (isset($this->$SAMPLES_PROB)) {
+                    $PROB *= $this->$SAMPLES_PROB[$KEY];
+                }
+            }
+            $PROB *= $this->LABELS_SUM[$KEY] / array_sum($this->LABELS_SUM);
+            $PROB_LIST[$KEY] = $PROB;
+        }
+        $HIGHEST_PROB = array_search(max($PROB_LIST), $PROB_LIST);
+        // print("<pre>" . print_r($HIGHEST_PROB, true) . "</pre>");
+        // print("<pre>" . print_r($PROB_LIST, true) . "</pre>");
+        // print("<pre>" . print_r($HIGHEST_PROB, true) . "</pre>");
+        return $PROB_LIST;
     }
 }

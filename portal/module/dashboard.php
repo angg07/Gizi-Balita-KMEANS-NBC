@@ -737,7 +737,7 @@
     window.onload = function() {
       var chartClass = new CanvasJS.Chart("chartClassification", {
         title: {
-          text: "Klasifikasi Status Gizi"
+          text: "Clustering Status Gizi"
         },
         data: [{
           type: "pie",

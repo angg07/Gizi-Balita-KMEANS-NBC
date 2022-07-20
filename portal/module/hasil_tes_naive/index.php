@@ -56,7 +56,7 @@ if (mysqli_num_rows($query) > 0) {
             $data['bb']
         ];
 
-        $LABELS[] = BMIWithLabel($data['bb'], $data['tb']);
+        $LABELS[] = BMIWithLabel2($data['bb'], $data['tb']);
     }
 }
 
@@ -239,6 +239,16 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
     return [$new_centroid, $dataset_label];
 }
 
+// function BMI($mass, $height)
+// {
+//     $massToPounds = ($mass * 2.20462) * 703;
+//     $heightToInches = ($height * 0.393701);
+//     $heightToInchesQuad = $heightToInches * $heightToInches;
+
+//     $bmi = $massToPounds / $heightToInchesQuad;
+//     return $bmi;
+// }
+
 //-------------------------------------------------------------------   
 //------------------------ Awal Properti BMI ------------------------
 //-------------------------------------------------------------------
@@ -263,6 +273,24 @@ function BMIWithLabel($mass, $height)
         $messageBMI = "Overweight";
     } else if ($BMI > 27) {
         $messageBMI = "Obese";
+    }
+
+    return $messageBMI;
+}
+
+function BMIWithLabel2($mass, $height)
+{
+    $heightToMeters = $height / 100;
+    $BMI = $mass / ($heightToMeters ** 2);
+
+    if ($BMI <= 18.5) {
+        $messageBMI = "Berat Badan Kurang";
+    } else if ($BMI > 17 && $BMI <= 23) {
+        $messageBMI = "Berat Badan Ideal";
+    } else if ($BMI > 23 && $BMI <= 27) {
+        $messageBMI = "Kegemukan";
+    } else if ($BMI > 27) {
+        $messageBMI = "Obesitas";
     }
 
     return $messageBMI;
@@ -662,7 +690,7 @@ $resultClass = $naiveBayes->getClassificationResult();
 ?>
 
 <!----- Jarak Centroid dan RUMUS IMT ----->
-<div class="container">
+<!-- <div class="container">
     <div class="row">
         <div class="col-sm-6">
             <?php
@@ -702,17 +730,16 @@ $resultClass = $naiveBayes->getClassificationResult();
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <?php
-print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid); // Menampilakn Hasil Cluster
+//print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid); // Menampilakn Hasil Cluster
 ?>
 
 
 <!----- Hasil Klasifikasi----->
-<!-- <br><br>
 <h3>Hasil Naive Bayes Classification</h3>
-<div class="col-sm-12">
+<!-- <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -802,8 +829,8 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
 
 
 <!----- Persentase Clustering ----->
-<br><br>
-<div class="col-sm-12">
+<!-- <br><br> -->
+<!-- <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -811,7 +838,7 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                     <thead>
                         <tr>
                             <td><b>No</b></td>
-                            <td><b>Label Cluster</b></td>
+                            <td><b>Class</b></td>
                             <td><b>Value</b></td>
                         </tr>
                     </thead>
@@ -839,18 +866,18 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                         <tr>
                             <td colspan="3">Mayoritas balita di Puskesmas Cibaregbeg, Memiliki status <b><?= $resultClass ?></b></td>
                         </tr>
-                        <!-- <tr>
+                        <tr>
                             <td colspan="3">Akurasi Probabilitas : <b><?= round($totalAkurasi * 100, 2); ?>%</b></td>
-                        </tr> -->
+                        </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!----- Hasil Tabel Naive Bayes Classification ----->
-<!-- <br><br>
+<!-- <br><br> -->
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
@@ -858,11 +885,18 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                 <table class="table display" id="datatables2">
                     <thead>
                         <tr>
-                            <td><b>No</b></td>
-                            <td><b>Nama</b></td>
-                            <td><b>Naive Bayes</b></td>
-                            <td><b>K-Means</b></td>
-                            <td><b>Hasil Perbandingan</b></td>
+                            <td rowspan="2" class="align-middle"><b>No</b></td>
+                            <td rowspan="2" class="align-middle"><b>Nama</b></td>
+                            <!--<td rowspan="2" class="align-middle"><b>TB</b></td>
+                            <td rowspan="2" class="align-middle"><b>BB</b></td>-->
+                            <td colspan="4" align="center"><b>Probabilitas</b></td>
+                            <td rowspan="2" class="align-middle" align="center"><b>Hasil</b></td>
+                        </tr>
+                        <tr>
+                            <td><small><b>Berat Badan Kurang</b></small></td>
+                            <td><small><b>Berat Badan Ideal</b></small></td>
+                            <td><small><b>Kegemukan</b></small></td>
+                            <td><small><b>Obesitas</b></small></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -876,15 +910,26 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                             $PROBABILITAS[] = $NB->predictProbabilitas($TEST[$i]);
 
                             $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
-                            // echo "<br>";
+                            $IMT = BMIWithLabel($datasetNormal[$i][1], $datasetNormal[$i][0]);
                             // echo $PREDICTED;
+                            //$dataArrayFilter[$i]['stats']
+                            // print("<pre>" . print_r($PROBABILITAS[$i], true) . "</pre>");
+
+                            $probKurang = round($PROBABILITAS[$i]['Berat Badan Kurang'], 6);
+                            $probIdeal = round($PROBABILITAS[$i]['Berat Badan Ideal'], 6);
+                            $probGemuk = round($PROBABILITAS[$i]['Kegemukan'], 6);
+                            $probObesitas = round($PROBABILITAS[$i]['Obesitas'], 6);
                         ?>
                             <tr>
                                 <td><?= $no ?></td>
                                 <td><?= $datasetNormal[$i][2] ?></td>
-                                <td><?= $PREDICTED[$i] ?></td>
-                                <td><?= $dataArrayFilter[$i]['stats'] ?></td>
-                                <td><?= $hasilCek ?></td>
+                                <!-- <td align="right"><?= $datasetNormal[$i][0] ?> Cm</td>
+                                <td align="right"><?= $datasetNormal[$i][1] ?> Kg</td> -->
+                                <td align="center"><?= $probKurang * 100; ?></td>
+                                <td align="center"><?= $probIdeal * 100; ?></td>
+                                <td align="center"><?= $probGemuk * 100; ?></td>
+                                <td align="center"><?= $probObesitas * 100 ?></td>
+                                <td align="center"><?= $PREDICTED[$i] ?></td>
                             </tr>
                         <?php
                         }
@@ -894,4 +939,4 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
             </div>
         </div>
     </div>
-</div> -->
+</div>

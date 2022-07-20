@@ -239,6 +239,16 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
     return [$new_centroid, $dataset_label];
 }
 
+// function BMI($mass, $height)
+// {
+//     $massToPounds = ($mass * 2.20462) * 703;
+//     $heightToInches = ($height * 0.393701);
+//     $heightToInchesQuad = $heightToInches * $heightToInches;
+
+//     $bmi = $massToPounds / $heightToInchesQuad;
+//     return $bmi;
+// }
+
 //-------------------------------------------------------------------   
 //------------------------ Awal Properti BMI ------------------------
 //-------------------------------------------------------------------
@@ -710,7 +720,7 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
 
 
 <!----- Hasil Klasifikasi----->
-<!-- <br><br>
+<br><br>
 <h3>Hasil Naive Bayes Classification</h3>
 <div class="col-sm-12">
     <div class="card">
@@ -798,7 +808,7 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 
 <!----- Persentase Clustering ----->
@@ -811,30 +821,30 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                     <thead>
                         <tr>
                             <td><b>No</b></td>
-                            <td><b>Label Cluster</b></td>
+                            <td><b>Class</b></td>
                             <td><b>Value</b></td>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                        $no = 0;
-                        $valueNBC = array();
-                        foreach ($classesResult as $class => $value) {
-                            $no++;
-                        ?>
+                    <?php
+                    $no = 0;
+                    $valueNBC = array();
+                    foreach ($classesResult as $class => $value) {
+                        $no++;
+                    ?>
+                        <tbody>
                             <tr>
                                 <td><?= $no ?></td>
                                 <td><?= $class ?></td>
                                 <td><?= round($value * 100, 2) ?>%</td>
                             </tr>
-                        <?php
-                            $valueNBC[] = [
-                                round($value * 100, 2)
-                            ];
-                        }
-                        // print_r($valueNBC[1]);
-                        ?>
-                    </tbody>
+                        </tbody>
+                    <?php
+                        $valueNBC[] = [
+                            round($value * 100, 2)
+                        ];
+                    }
+                    // print_r($valueNBC[1]);
+                    ?>
                     <tfoot>
                         <tr>
                             <td colspan="3">Mayoritas balita di Puskesmas Cibaregbeg, Memiliki status <b><?= $resultClass ?></b></td>
@@ -850,7 +860,7 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
 </div>
 
 <!----- Hasil Tabel Naive Bayes Classification ----->
-<!-- <br><br>
+<br><br>
 <div class="col-sm-12">
     <div class="card">
         <div class="card-body px-0 pt-0 pb-2">
@@ -873,7 +883,6 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
                             $NB = new NaiveBayesClassification();
                             $NB->train($SAMPLES, $LABELS);
                             $PREDICTED[] = $NB->predict($TEST[$i]);
-                            $PROBABILITAS[] = $NB->predictProbabilitas($TEST[$i]);
 
                             $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
                             // echo "<br>";
@@ -894,4 +903,4 @@ print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $
             </div>
         </div>
     </div>
-</div> -->
+</div>
