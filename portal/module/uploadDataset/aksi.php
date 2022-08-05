@@ -1,26 +1,16 @@
 <?php
 require 'vendor/autoload.php';
 include_once '../../config/koneksi.php';
+include_once '../../config/function.php';
 
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-function BMIWithLabel($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
+if (isset($_POST['display'])) {
+    $query = mysqli_query($conn, "SELECT * FROM dataset WHERE golDar='A'");
 
-    if ($BMI <= 18.5) {
-        $messageBMI = "Underweight";
-    } else if ($BMI > 17 && $BMI <= 23) {
-        $messageBMI = "Normal Weight";
-    } else if ($BMI > 23 && $BMI <= 27) {
-        $messageBMI = "Overweight";
-    } else if ($BMI > 27) {
-        $messageBMI = "Obese";
-    }
-
-    return $messageBMI;
+    $data = mysqli_fetch_array($query);
+    print("<pre>" . print_r($data, true) . "</pre>");
 }
 
 if (isset($_POST['deleteDataset'])) {
@@ -30,6 +20,7 @@ if (isset($_POST['deleteDataset'])) {
     mysqli_query($conn, $sql);
     mysqli_query($conn, 'TRUNCATE TABLE dataset');
 }
+
 
 if (isset($_POST['submit'])) {
     $err = '';
@@ -71,15 +62,16 @@ if (isset($_POST['submit'])) {
             $tb = $sheetData[$i][13];
             $bb = $sheetData[$i][14];
             $email = $nik . '@email.com';
+            $IMT_status = BMIWithLabel($sheetData[$i][14], $sheetData[$i][13]);
             $cariNik = mysqli_num_rows(mysqli_query($conn, "SELECT nik FROM dataset WHERE nik='$nik'"));
             $cariUser = mysqli_num_rows(mysqli_query($conn, "SELECT username FROM users WHERE username='$nik'"));
 
             // echo $cariNik;
             if ($cariNik > 0) {
-                $sql = "UPDATE dataset SET nama='$nama', tb='$tb', bb='$bb', tempatLahir='$tempatLahir', jenisData='$jenisData', jenisKelamin='$kelamin', tanggalLahir='$tanggalLahir' WHERE nik='$nik'";
+                $sql = "UPDATE dataset SET nama='$nama', tb='$tb', bb='$bb', tempatLahir='$tempatLahir', jenisData='$jenisData', jenisKelamin='$kelamin', tanggalLahir='$tanggalLahir', IMT_status='$IMT_status' WHERE nik='$nik'";
             } else {
                 // echo $nik . " - " . $nama . " - " . $tb . " - " . $bb . "<br>";
-                $sql = "INSERT INTO dataset (nik, nama, tb, bb, jenisKelamin, golDar, tempatLahir, tanggalLahir, jenisData) VALUES ('$nik', '$nama', '$tb', '$bb', '$kelamin', '$golDar', '$tempatLahir', '$tanggalLahir', '$jenisData')";
+                $sql = "INSERT INTO dataset (nik, nama, tb, bb, jenisKelamin, golDar, tempatLahir, tanggalLahir, jenisData, IMT_status) VALUES ('$nik', '$nama', '$tb', '$bb', '$kelamin', '$golDar', '$tempatLahir', '$tanggalLahir', '$jenisData', '$IMT_status')";
             }
 
             //Otomatis membuat login dengan username dan password dari nik

@@ -264,3 +264,94 @@ function IMT($x)
 		return "Obesitas";
 	}
 }
+
+function BMIWithLabel($mass, $height)
+{
+	$heightToMeters = $height / 100;
+	$BMI = $mass / ($heightToMeters ** 2);
+
+	if ($BMI <= 18.5) {
+		$messageBMI = "Underweight";
+	} else if ($BMI > 17 && $BMI <= 23) {
+		$messageBMI = "Normal Weight";
+	} else if ($BMI > 23 && $BMI <= 27) {
+		$messageBMI = "Overweight";
+	} else if ($BMI > 27) {
+		$messageBMI = "Obese";
+	}
+
+	return $messageBMI;
+}
+
+function CekIMTStatus($cekIMT, $cekStatus)
+{
+	$hasilCek = '';
+
+	//CekIMT
+	if ($cekIMT == 'Underweight') {
+		$cekIMT = 'Kurang';
+	}
+
+	if ($cekIMT == 'Normal Weight') {
+		$cekIMT = 'Normal';
+	}
+
+	if ($cekIMT == 'Overweight') {
+		$cekIMT = 'Over';
+	}
+
+	if ($cekIMT == 'Obese') {
+		$cekIMT = 'OBESE';
+	}
+
+	//STatus
+	if ($cekStatus == 'Berat Badan Kurang') {
+		$cekStatus = 'Kurang';
+	}
+
+	if ($cekStatus == 'Berat Badan Ideal') {
+		$cekStatus = 'Normal';
+	}
+
+	if ($cekStatus == 'Kegemukan') {
+		$cekStatus = 'Over';
+	}
+
+	if ($cekStatus == 'Obesitas') {
+		$cekStatus = 'OBESE';
+	}
+
+	if ($cekIMT == $cekStatus) {
+		$hasilCek = 'Sesuai';
+	} else {
+		$hasilCek = 'Tidak Sesuai';
+	}
+
+	return $hasilCek;
+}
+
+function BMI($mass, $height)
+{
+	$heightToMeters = $height / 100;
+	$bmi = $mass / ($heightToMeters ** 2);
+
+	return $bmi;
+}
+
+function BMIWithLabel2($mass, $height)
+{
+	$heightToMeters = $height / 100;
+	$BMI = $mass / ($heightToMeters ** 2);
+
+	if ($BMI <= 18.5) {
+		$messageBMI = "Berat Badan Kurang";
+	} else if ($BMI > 17 && $BMI <= 23) {
+		$messageBMI = "Berat Badan Ideal";
+	} else if ($BMI > 23 && $BMI <= 27) {
+		$messageBMI = "Kegemukan";
+	} else if ($BMI > 27) {
+		$messageBMI = "Obesitas";
+	}
+
+	return $messageBMI;
+}

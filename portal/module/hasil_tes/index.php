@@ -1,5 +1,4 @@
 <?php
-include_once '../../config/koneksi.php';
 include_once '../../config/NaiveBayes.php';
 
 // $datasetNormal = [
@@ -239,86 +238,6 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
     return [$new_centroid, $dataset_label];
 }
 
-//-------------------------------------------------------------------   
-//------------------------ Awal Properti BMI ------------------------
-//-------------------------------------------------------------------
-function BMI($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $bmi = $mass / ($heightToMeters ** 2);
-
-    return $bmi;
-}
-
-function BMIWithLabel($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
-
-    if ($BMI <= 18.5) {
-        $messageBMI = "Underweight";
-    } else if ($BMI > 17 && $BMI <= 23) {
-        $messageBMI = "Normal Weight";
-    } else if ($BMI > 23 && $BMI <= 27) {
-        $messageBMI = "Overweight";
-    } else if ($BMI > 27) {
-        $messageBMI = "Obese";
-    }
-
-    return $messageBMI;
-}
-
-function CekIMTStatus($cekIMT, $cekStatus)
-{
-    $hasilCek = '';
-
-    //CekIMT
-    if ($cekIMT == 'Underweight') {
-        $cekIMT = 'Kurang';
-    }
-
-    if ($cekIMT == 'Normal Weight') {
-        $cekIMT = 'Normal';
-    }
-
-    if ($cekIMT == 'Overweight') {
-        $cekIMT = 'Over';
-    }
-
-    if ($cekIMT == 'Obese') {
-        $cekIMT = 'OBESE';
-    }
-
-    //STatus
-    if ($cekStatus == 'Berat Badan Kurang') {
-        $cekStatus = 'Kurang';
-    }
-
-    if ($cekStatus == 'Berat Badan Ideal') {
-        $cekStatus = 'Normal';
-    }
-
-    if ($cekStatus == 'Kegemukan') {
-        $cekStatus = 'Over';
-    }
-
-    if ($cekStatus == 'Obesitas') {
-        $cekStatus = 'OBESE';
-    }
-
-    if ($cekIMT == $cekStatus) {
-        $hasilCek = 'Sesuai';
-    } else {
-        $hasilCek = 'Tidak Sesuai';
-    }
-
-    return $hasilCek;
-}
-
-//-------------------------------------------------------------------   
-//------------------------ Akhir Properti BMI ------------------------
-//-------------------------------------------------------------------
-
 // Print tabel hasil cluster
 function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid)
 { ?>
@@ -426,7 +345,7 @@ function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $dataset
 function printCentroidLabel($jarakCentroid)
 { ?>
     <br><br>
-    <h5>Jarak Centroid Cluster</h5>
+    <h5>Centroid Awal</h5>
     <div class=" col-sm-12">
         <div class="card">
             <div class="card-body px-0 pt-0 pb-2">
@@ -661,6 +580,11 @@ $classesResult = $naiveBayes->getResultProbabilityOfClassOnCondition(10);
 $resultClass = $naiveBayes->getClassificationResult();
 ?>
 
+
+<?php
+print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid); // Menampilakn Hasil Cluster
+?>
+
 <!----- Jarak Centroid dan RUMUS IMT ----->
 <div class="container">
     <div class="row">
@@ -703,103 +627,6 @@ $resultClass = $naiveBayes->getClassificationResult();
         </div>
     </div>
 </div>
-
-<?php
-print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid); // Menampilakn Hasil Cluster
-?>
-
-
-<!----- Hasil Klasifikasi----->
-<!-- <br><br>
-<h3>Hasil Naive Bayes Classification</h3>
-<div class="col-sm-12">
-    <div class="card">
-        <div class="card-body px-0 pt-0 pb-2">
-            <div class="table-responsive p-0">
-                <style type="text/css">
-                    .tg {
-                        border-collapse: collapse;
-                        border-spacing: 0;
-                    }
-
-                    .tg td {
-                        border-color: black;
-                        border-style: solid;
-                        border-width: 1px;
-                        font-family: Arial, sans-serif;
-                        font-size: 14px;
-                        overflow: hidden;
-                        padding: 10px 5px;
-                        word-break: normal;
-                    }
-
-                    .tg th {
-                        border-color: black;
-                        border-style: solid;
-                        border-width: 1px;
-                        font-family: Arial, sans-serif;
-                        font-size: 14px;
-                        font-weight: normal;
-                        overflow: hidden;
-                        padding: 10px 5px;
-                        word-break: normal;
-                    }
-
-                    .tg .tg-9wq8 {
-                        border-color: inherit;
-                        text-align: center;
-                        vertical-align: middle
-                    }
-
-                    .tg .tg-c3ow {
-                        border-color: inherit;
-                        text-align: center;
-                        vertical-align: top
-                    }
-
-                    .tg .tg-0pky {
-                        border-color: inherit;
-                        text-align: left;
-                        vertical-align: top
-                    }
-                </style>
-                <table class="tg table display table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="tg-c3ow">#</th>
-                            <th class="tg-c3ow" colspan="4" style="border-right: 1px solid #B5B5B5;"><b>Jumlah Kategori Status Gizi</b></th>
-                            <th class="tg-c3ow" colspan="4"><b>Probabilitas Kategori Status Gizi</b></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tg-9wq8" rowspan="2" style="border-right: 1px solid #B5B5B5;">Jumlah</td>
-                            <td class="tg-c3ow"><b>Berat Badan Kurang</b></td>
-                            <td class="tg-c3ow"><b>Berat&nbsp;&nbsp;Badan Ideal</td>
-                            <td class="tg-c3ow"><b>Kegemukan</td>
-                            <td class="tg-c3ow" style="border-right: 1px solid #B5B5B5;"><b>Obesitas</td>
-                            <td class="tg-c3ow"><b>Berat Badan Kurang</td>
-                            <td class="tg-c3ow"><b>Berat Badan Ideal</td>
-                            <td class="tg-c3ow"><b>Kegemukan</td>
-                            <td class="tg-c3ow"><b>Obesitas</td>
-                        </tr>
-                        <tr>
-                            <td class="tg-c3ow"><?= $dataKurang; ?></td>
-                            <td class="tg-c3ow"><?= $dataIdeal; ?></td>
-                            <td class="tg-c3ow"><?= $dataKegemukan; ?></td>
-                            <td class="tg-c3ow"><?= $dataObesitas; ?></td>
-                            <td class="tg-c3ow" style="border-left: 1px solid #B5B5B5;"><?= $dataKurang . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataIdeal . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataKegemukan . " / " . $totalDataStatus ?></td>
-                            <td class="tg-c3ow"><?= $dataObesitas . " / " . $totalDataStatus ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div> -->
-
 
 <!----- Persentase Clustering ----->
 <br><br>

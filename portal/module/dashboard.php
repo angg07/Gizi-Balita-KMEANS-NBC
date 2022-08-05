@@ -120,7 +120,6 @@
 </div>
 <div class="row mt-4">
   <?php
-  include_once '../../config/koneksi.php';
   include_once '../../config/NaiveBayes.php';
 
   // $datasetNormal = [
@@ -356,31 +355,6 @@
   //     return $bmi;
   // }
 
-  function BMI($mass, $height)
-  {
-    $heightToMeters = $height / 100;
-    $bmi = $mass / ($heightToMeters ** 2);
-
-    return $bmi;
-  }
-
-  function BMIWithLabel($mass, $height)
-  {
-    $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
-
-    if ($BMI <= 18.5) {
-      $messageBMI = "UNDERWEIGHT";
-    } else if ($BMI > 17 && $BMI <= 23) {
-      $messageBMI = "NORMAL WEIGHT";
-    } else if ($BMI > 23 && $BMI <= 27) {
-      $messageBMI = "OVERWEIGHT";
-    } else if ($BMI > 27) {
-      $messageBMI = "OBESE";
-    }
-
-    return $messageBMI;
-  }
 
   function searchForNik($id, $array)
   {
@@ -731,6 +705,35 @@
     ];
   }
 
+
+  //Data untuk Scatter
+  $dataPoints = array();
+  //Best practice is to create a separate file for handling connection to database
+  try {
+    // Creating a new connection.
+    // Replace your-hostname, your-db, your-username, your-password according to your database
+    $link = new \PDO(
+      'mysql:host=localhost;dbname=gizi;charset=utf8mb4', //'mysql:host=localhost;dbname=canvasjs_db;charset=utf8mb4',
+      'root', //'root',
+      '', //'',
+      array(
+        \PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        \PDO::ATTR_PERSISTENT => false
+      )
+    );
+
+    $handle = $link->prepare('SELECT tb, bb from dataset');
+    $handle->execute();
+    $result = $handle->fetchAll(\PDO::FETCH_OBJ);
+
+    foreach ($result as $row) {
+      array_push($dataPoints, array("x" => $row->bb, "y" => $row->tb));
+    }
+    $link = null;
+  } catch (\PDOException $ex) {
+    print($ex->getMessage());
+  }
+
   ?>
 
   <script type="text/javascript">
@@ -787,8 +790,29 @@
         }]
       });
 
+      var scatterClusttering = new CanvasJS.Chart("scatterContainer", {
+        exportEnabled: true,
+        theme: "light1",
+        title: {
+          text: "Sebaran Tinggi & Berat Badan"
+        },
+        axisX: {
+          title: "Weight",
+          suffix: " kg"
+        },
+        axisY: {
+          title: "Height",
+          suffix: " cm"
+        },
+        data: [{
+          type: "scatter",
+          dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+        }]
+      });
+
       chartClass.render();
       chartIMT.render();
+      scatterClusttering.render();
     }
   </script>
   <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -799,6 +823,9 @@
     <div class="col-md-6">
       <div id="chartContainer" style="height: 300px; width: 100%;"></div>
     </div>
+    <!-- <div class="col-md-12 mt-4">
+      <div id="scatterContainer" style="height: 300px; width: 100%;"></div>
+    </div> -->
   </div>
 
 

@@ -21,6 +21,8 @@
                         <div class="form-group">
                             <input type="submit" name="submit" class="btn btn-success" value="Upload File">
                             <input type="submit" name="deleteDataset" class="btn btn-danger" value="Delete Dataset">
+                            <input type="submit" name="display" class="btn btn-danger" value="Display">
+
                         </div>
                     </form>
                 </div>

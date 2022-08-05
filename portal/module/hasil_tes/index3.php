@@ -263,7 +263,7 @@ function BMI($mass, $height)
 function BMIWithLabel($mass, $height)
 {
     $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
+    $BMI = $mass / ($heightToMeters * $heightToMeters);
 
     if ($BMI <= 18.5) {
         $messageBMI = "Underweight";

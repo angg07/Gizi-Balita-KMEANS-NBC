@@ -235,70 +235,6 @@ function iterasi_kmeans($dataset, $centroid, $banyak_dataset, $banyak_centroid, 
 }
 
 
-//-------------------------------------------------------------------   
-//------------------------ Awal Properti BMI ------------------------
-//-------------------------------------------------------------------
-function BMI($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $bmi = $mass / ($heightToMeters ** 2);
-
-    return $bmi;
-}
-
-function BMIWithLabel($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
-
-    if ($BMI <= 18.5) {
-        $messageBMI = "Underweight";
-    } else if ($BMI > 17 && $BMI <= 23) {
-        $messageBMI = "Normal Weight";
-    } else if ($BMI > 23 && $BMI <= 27) {
-        $messageBMI = "Overweight";
-    } else if ($BMI > 27) {
-        $messageBMI = "Obese";
-    }
-
-    return $messageBMI;
-}
-
-function BMIWithLabel2($mass, $height)
-{
-    $heightToMeters = $height / 100;
-    $BMI = $mass / ($heightToMeters ** 2);
-
-    if ($BMI <= 18.5) {
-        $messageBMI = "Berat Badan Kurang";
-    } else if ($BMI > 17 && $BMI <= 23) {
-        $messageBMI = "Berat Badan Ideal";
-    } else if ($BMI > 23 && $BMI <= 27) {
-        $messageBMI = "Kegemukan";
-    } else if ($BMI > 27) {
-        $messageBMI = "Obesitas";
-    }
-
-    return $messageBMI;
-}
-
-function CekIMTStatus($cekIMT, $cekStatus)
-{
-    $hasilCek = '';
-
-    if ($cekIMT == $cekStatus) {
-        $hasilCek = 'Sesuai';
-    } else {
-        $hasilCek = 'Tidak Sesuai';
-    }
-
-    return $hasilCek;
-}
-
-//-------------------------------------------------------------------   
-//------------------------ Akhir Properti BMI ------------------------
-//-------------------------------------------------------------------
-
 // Print tabel hasil cluster
 function print_hasil_cluster($dataset_label, $dataset, $banyak_dataset, $datasetNormal, $jarakCentroid)
 { ?>
@@ -566,6 +502,9 @@ $filterObese = 'Obese';
 
 $dataUnder = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterUnder];
 $dataNormal = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterNormal];
+if ($dataNormal == NULL) {
+    $dataNormal = 0;
+}
 $dataOver = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterOver];
 $dataObese = array_count_values(array_column($dataArrayFilter, 'IMT'))[$filterObese];
 $totalDataIMT = $dataUnder + $dataNormal + $dataOver + $dataObese;
@@ -665,9 +604,9 @@ $resultClass = $naiveBayes->getClassificationResult();
                         <tr>
                             <td><b>No</b></td>
                             <td><b>Nama</b></td>
+                            <td><b>IMT</b></td>
                             <td><b>Naive Bayes</b></td>
                             <td><b>K-Means</b></td>
-                            <td><b>Hasil Perbandingan</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -684,19 +623,29 @@ $resultClass = $naiveBayes->getClassificationResult();
                             $NB->train($SAMPLES, $LABELS);
                             $PREDICTED[] = $NB->predict($TEST[$i]);
 
-                            $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
+                            $IMT = BMIWithLabel2($datasetNormal[$i][1], $datasetNormal[$i][0]);
+                            // $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
                             // echo "<br>";
                             // echo $PREDICTED;
                         ?>
                             <tr>
                                 <td><?= $no ?></td>
                                 <td><?= $datasetNormal[$i][2] ?></td>
+                                <td><?= $IMT ?></td>
                                 <td><?= $PREDICTED[$i] ?></td>
                                 <td><?= $dataArrayFilter[$i]['stats'] ?></td>
-                                <td><?= $hasilCek ?></td>
                             </tr>
                         <?php
                         }
+                        //print("<pre>" . print_r($dataArrayFilter, true) . "</pre>");
+
+                        //Akurasi K-Means
+                        // $valueKmeans_under = is_infinite($valueKmeans[0] / $dataUnder);
+                        // $valueKmeans_normal = is_infinite($valueKmeans[1] / $dataNormal);
+                        // $valueKmeans_over = is_infinite($valueKmeans[2] / $dataOver);
+                        // $valueKmeans_obese = is_infinite($valueKmeans[3] / $dataObese);
+                        // $totalValueKmeans = $valueKmeans_under + $valueKmeans_normal + $valueKmeans_over + $valueKmeans_obese;
+                        // echo is_infinite($valueKmeans_normal);
                         ?>
                     </tbody>
                     <tfoot class="bg-primary text-white">
