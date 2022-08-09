@@ -492,8 +492,9 @@ foreach ($hasilHasil as $DAF) {
 
 
 //-------------------------------------------------------------------   
-//------------------------------- Nilai Data ------------------------
+//------------------------------Mencari Nilai Data ------------------------
 //-------------------------------------------------------------------
+
 //FIlter IMT
 $filterUnder = 'Underweight';
 $filterNormal = 'Normal weight';
@@ -556,7 +557,6 @@ $jumlahDataNBCFilter[] = [
 
 
 
-
 $alkurasiKurang = ($dataUnder + $banyak_dataset) / (($dataUnder + $banyak_dataset) + $dataKurang);
 $akurasiIdeal = ($dataNormal + $banyak_dataset) / (($dataNormal + $banyak_dataset) + $dataIdeal);
 $akurasiKegemukan = ($dataOver + $banyak_dataset) / (($dataOver + $banyak_dataset) + $dataKegemukan);
@@ -566,12 +566,15 @@ $totalAkurasi = ($alkurasiKurang + $akurasiIdeal + $akurasiKegemukan + $akurasiO
 // print("<pre>" . print_r($jumlahDataIMTFilter, true) . "</pre>");
 // print("<pre>" . print_r($jumlahDataStatusFilter, true) . "</pre>");
 
+//-------------------------------------------------------------------   
+//------------------------------Akhir Mencari Nilai Data ------------------------
+//-------------------------------------------------------------------
 
 
 
 //-------------------------------------------------------------------   
 //---------------------- Start Metode NBC ---------------------------
-//-------------------------------------------------------------------\
+//-------------------------------------------------------------------
 
 //Test Data For NBC
 $TEST = array();
@@ -604,9 +607,8 @@ $resultClass = $naiveBayes->getClassificationResult();
                         <tr>
                             <td><b>No</b></td>
                             <td><b>Nama</b></td>
-                            <td><b>IMT</b></td>
-                            <td><b>Naive Bayes</b></td>
-                            <td><b>K-Means</b></td>
+                            <td><b>IMT - NBC</b></td>
+                            <td><b>IMT - KMeans</b></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -623,17 +625,17 @@ $resultClass = $naiveBayes->getClassificationResult();
                             $NB->train($SAMPLES, $LABELS);
                             $PREDICTED[] = $NB->predict($TEST[$i]);
 
-                            $IMT = BMIWithLabel2($datasetNormal[$i][1], $datasetNormal[$i][0]);
-                            // $hasilCek = CekIMTStatus($PREDICTED[$i], $dataArrayFilter[$i]['stats']);
+                            $IMT = BMIWithLabel($datasetNormal[$i][1], $datasetNormal[$i][0]);
+                            $IMT_NBC = CekIMTStatus($IMT, $PREDICTED[$i]);
+                            $IMT_Kmeans = CekIMTStatus($IMT, $dataArrayFilter[$i]['stats']);
                             // echo "<br>";
                             // echo $PREDICTED;
                         ?>
                             <tr>
                                 <td><?= $no ?></td>
                                 <td><?= $datasetNormal[$i][2] ?></td>
-                                <td><?= $IMT ?></td>
-                                <td><?= $PREDICTED[$i] ?></td>
-                                <td><?= $dataArrayFilter[$i]['stats'] ?></td>
+                                <td align="left"><?= $IMT_NBC ?></td>
+                                <td align="left"><?= $IMT_Kmeans ?></td>
                             </tr>
                         <?php
                         }
